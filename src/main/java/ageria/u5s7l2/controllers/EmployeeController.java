@@ -73,7 +73,7 @@ public class EmployeeController {
 
     @PutMapping("/{employeeId}")
     @ResponseStatus(HttpStatus.OK)
-    public Employee updateEmployee(@PathVariable Long employeeId, @RequestBody EmployeeDTO body, BindingResult bindingResult) {
+    public Employee updateEmployee(@PathVariable Long employeeId, @RequestBody Employee body, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String msg = (String) bindingResult.getAllErrors().stream().map(error -> error.getDefaultMessage()).collect(Collectors.joining());
             throw new BadRequestException(msg);
