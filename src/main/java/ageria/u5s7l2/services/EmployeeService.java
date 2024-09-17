@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,9 @@ public class EmployeeService {
 
     @Autowired
     Cloudinary cloudinaryUploader;
+
+    @Autowired
+    PasswordEncoder bcrypt;
 
     // 1. GET
     public Page<Employee> getAllEmployee(int pages, int size, String sortBy) {
@@ -46,11 +50,12 @@ public class EmployeeService {
             throw new BadRequestException("Employee with this email already exists");
         }
 
-        Employee newEmployee = new Employee(body.name(),
+        Employee newEmployee = new Employee(
+                body.name(),
                 body.surname(),
                 body.username(),
                 body.email(),
-                body.password(),
+                bcrypt.encode(body.password()),
                 "https://ui-avatars.com/api/?name=" + body.name() + "+" + body.surname());
         return this.employeeRepository.save(newEmployee);
 

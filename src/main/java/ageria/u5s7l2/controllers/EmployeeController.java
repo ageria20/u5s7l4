@@ -67,8 +67,16 @@ public class EmployeeController {
     // 2.1 POST UPLOAD AVATAR
     @PostMapping("/avatar/{employeeId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void uploadEmployeeAvatar(@RequestParam("avatar") MultipartFile avatar, @PathVariable Long employeeId) {
         this.employeeService.uploadImage(avatar, employeeId);
+    }
+
+    // POST
+    @PostMapping("/me/avatar")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadEmployeeAvatarAuth(@RequestParam("avatar") MultipartFile avatar, @AuthenticationPrincipal Employee currentAuthenticatedEmployee) {
+        this.employeeService.uploadImage(avatar, currentAuthenticatedEmployee.getId());
     }
 
     @PutMapping("/{employeeId}")
