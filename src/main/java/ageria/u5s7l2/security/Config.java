@@ -1,6 +1,7 @@
 package ageria.u5s7l2.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @EnableWebSecurity
+@EnableMethodSecurity
 public class Config {
 
     @Bean
