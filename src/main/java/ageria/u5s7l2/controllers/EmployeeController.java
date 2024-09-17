@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,14 @@ public class EmployeeController {
     }
 
 
+    // 1.2 GET ME's
+
+    @GetMapping("/me")
+    public Employee getEmployeeProfile(@AuthenticationPrincipal Employee currentAuthenticatedEmployee) {
+        return currentAuthenticatedEmployee;
+    }
+
+
     //2. POST
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -72,6 +81,13 @@ public class EmployeeController {
         return this.employeeService.findByIdAndUpdate(employeeId, body);
     }
 
+
+    // PUT ME endpoint
+    @PutMapping("/me")
+    public Employee updateEmployeeProfile(@AuthenticationPrincipal Employee currentAuthenticatedEmployee, @RequestBody Employee body) {
+        return this.employeeService.findByIdAndUpdate(currentAuthenticatedEmployee.getId(), body);
+    }
+
     @DeleteMapping("/{employeeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteEmploye(@PathVariable Long employeeId) {
@@ -81,6 +97,12 @@ public class EmployeeController {
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("YOU CANNOT DELETE AN EMPLOYEE THAT IS LINKED TO A BOOKING");
         }
+    }
+
+    // DELETE ME endpoint
+    @DeleteMapping("/me")
+    public void deleteEmployeeProfile(@AuthenticationPrincipal Employee currentAuthenticatedEmployee) {
+        this.employeeService.findByIdAndDelete(currentAuthenticatedEmployee.getId());
     }
 
 }

@@ -56,13 +56,19 @@ public class EmployeeService {
 
     }
 
-    public Employee findByIdAndUpdate(Long id, EmployeeDTO body) {
+    public Employee findByIdAndUpdate(Long id, Employee body) {
+        // controllo se l'email e' gia in uso
+        this.employeeRepository.findByEmail(body.getEmail()).ifPresent(
+                user -> {
+                    throw new BadRequestException("The employee with this email already exists");
+                }
+        );
         Employee employeeFromDb = this.findById(id);
-        employeeFromDb.setUsername(body.username());
-        employeeFromDb.setName(body.name());
-        employeeFromDb.setSurname(body.surname());
-        employeeFromDb.setEmail(body.email());
-        employeeFromDb.setAvatar("https://ui-avatars.com/api/?name=" + body.name() + body.surname());
+        employeeFromDb.setUsername(body.getUsername());
+        employeeFromDb.setName(body.getName());
+        employeeFromDb.setSurname(body.getSurname());
+        employeeFromDb.setEmail(body.getEmail());
+        employeeFromDb.setAvatar("https://ui-avatars.com/api/?name=" + body.getName() + body.getSurname());
         return employeeFromDb;
     }
 
